@@ -55,8 +55,11 @@
 		width: 100%;
 		height: 100%;
 	}
+	.my-table{
+		width: 100%;
+	}
 	.my-table td{
-		width:100vh;
+		width:50%;
 		padding: 10px;
 	}
 </style>
@@ -64,7 +67,7 @@
 	<section class="container">
 		<div class="btn-toolbar" data-role="editor-toolbar" data-target="#editor">
 			<span class="btn btn-info demo-tooltip" data-tooltip="Create a table" id="btn-table">
-				<a data-edit="insertHTML <table class='table-bordered my-table'><tr><td>Val1</td><td>Val2</td></tr></table>" >	
+				<a data-edit="insertHTML <table class='table-bordered my-table'><tr><td>Val1</td><td>Val2</td></tr></table>">	
 					<i class="fas fa-table"></i>
 				</a>
 			</span>
@@ -87,8 +90,22 @@
 <script type="text/javascript" src="js/bootstrap-wysiwyg.js"></script>
 
 <script type="text/javascript">
-		function fun() {
-			console.log("Clicked");
+		var editor = $('#editor');
+		editor.wysiwyg();
+		editor.click(function(){
+			check_tbl();
+		});
+
+		editor.children('.my-table').click(check_tbl());
+
+		function check_tbl(){
+			if(editor.children('.my-table').length){
+				editor
+					.children('.my-table')
+					.on("click",e => {
+						if(e.ctrlKey)
+							console.log(e.target.index());
+					});
+			}
 		}
-		$('#editor').wysiwyg();
 </script>
