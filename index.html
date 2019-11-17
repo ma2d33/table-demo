@@ -4,6 +4,7 @@
 	<title>Demo</title>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<script src="https://kit.fontawesome.com/c86d537266.js" crossorigin="anonymous"></script>
+	
 </head>
 <style type="text/css">
 	 body{
@@ -32,18 +33,18 @@
 		border-radius: 8px 8px 8px 0px;
 		box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
 		color: #FFF;
-		content: attr(data-tooltip); /* Главная часть кода, определяющая содержимое всплывающей подсказки */
+		content: attr(data-tooltip);
 		margin-top: -24px;
-		opacity: 0; /* Наш элемент прозрачен... */
+		opacity: 0; 
 		padding: 3px 7px;
 		position: absolute;
-		visibility: hidden; /* ...и скрыт. */
+		visibility: hidden;
 				
-		transition: all 0.4s ease-in-out; /* Добавить плавности по вкусу */
+		transition: all 0.4s ease-in-out;
 	}
 			
 	.demo-tooltip:hover::after {
-		opacity: 1; /* Показываем его */
+		opacity: 1;
 		visibility: visible;
 	}
 	#btn-table{
@@ -62,12 +63,28 @@
 		width:50%;
 		padding: 10px;
 	}
+	#tbl_options{
+		background-color: #ccc;
+		padding: .5em;
+		text-align: center;
+		width: 250px;
+		border-radius: 8px;
+	}
+	#tbl_options li{
+		display: inline;
+		padding: 4%;
+		border-radius: 4px;
+	}
+	#tbl_options li:hover{
+		background-color: steelblue;
+		color: #fff;
+	}
 </style>
 <body>
 	<section class="container">
 		<div class="btn-toolbar" data-role="editor-toolbar" data-target="#editor">
 			<span class="btn btn-info demo-tooltip" data-tooltip="Create a table" id="btn-table">
-				<a data-edit="insertHTML <table class='table-bordered my-table'><tr><td>Val1</td><td>Val2</td></tr></table>">	
+				<a data-edit='insertHTML <table class="table-bordered my-table"><tr onClick="my_funct(this)"><td>...</td></tr></table>'>	
 					<i class="fas fa-table"></i>
 				</a>
 			</span>
@@ -80,6 +97,11 @@
 
 			Suspendisse faucibus ut felis sed rhoncus. Suspendisse vestibulum urna ac tellus viverra rutrum. Nullam et venenatis quam. Aenean bibendum elit at neque fermentum, sed iaculis massa suscipit. Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur pretium aliquam felis, vitae vehicula mi laoreet eget. Sed molestie leo vel libero ullamcorper fermentum. Morbi ullamcorper, nunc vitae congue convallis, velit ligula egestas lectus, vitae accumsan turpis metus vitae est. Cras porttitor ante id magna facilisis, at bibendum ante interdum. Etiam quis nisi ac libero sollicitudin iaculis quis a elit. Morbi at eros nec neque auctor pulvinar in in leo. Sed auctor ipsum augue, a dignissim ipsum gravida sit amet. Cras leo neque, efficitur et iaculis a, commodo eleifend orci. Sed elementum mauris eu convallis scelerisque. In feugiat massa ipsum, quis luctus ipsum bibendum non.
 		</div>
+		<ul id="tbl_options">
+			<li id="tbl_cell_right">Cell left</li>
+			<li id="tbl_cell_left">Cell left</li>
+			<li id="tbl_add_row">Add row</li>
+		</ul>
 	</section>
 </body>
 </html>
@@ -92,20 +114,18 @@
 <script type="text/javascript">
 		var editor = $('#editor');
 		editor.wysiwyg();
-		editor.click(function(){
-			check_tbl();
-		});
 
-		editor.children('.my-table').click(check_tbl());
-
-		function check_tbl(){
-			if(editor.children('.my-table').length){
-				editor
-					.children('.my-table')
-					.on("click",e => {
-						if(e.ctrlKey)
-							console.log(e.target.index());
-					});
-			}
+		function my_funct(e){
+			$(e).attr('state','active');
 		}
+
+
+
+		$('#tbl_add_row').on('click',(function() {
+			$('#editor')
+			.find('.my-table')
+			.attr('state', 'active')
+			.append('<tr onClick="my_funct(this)"><td>...</td></tr>');
+		}));
+
 </script>
