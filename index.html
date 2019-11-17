@@ -64,10 +64,10 @@
 		padding: 10px;
 	}
 	#tbl_options{
-		background-color: #ccc;
+		background-color: #dcdcdcf0;
 		padding: .5em;
 		text-align: center;
-		width: 250px;
+		width: auto;
 		border-radius: 8px;
 		position: absolute;
 		top:0;
@@ -76,7 +76,7 @@
 	}
 	#tbl_options li{
 		display: inline;
-		padding: 3%;
+		padding: 5px;
 		border-radius: 4px;
 		cursor: pointer;
 	}
@@ -123,6 +123,11 @@
 	var editor = $('#editor');
 	editor.wysiwyg();
 
+	editor.on('click',function(e){
+		if(e.target.nodeName != 'TD')
+			cell_menu.hide(200);
+	});
+
 	var tbl_cell;
 	var mouse_x,mouse_y;
 	var cell_menu = $("#tbl_options");
@@ -149,11 +154,20 @@
 		cell_menu.hide(200);
 	});
 	$('#tbl_cell_left_del').click(function() {
-		if(tbl_cell.prev().length){
-			tbl_cell.prev().remove();
+		if($(tbl_cell).prev().length){
+			$(tbl_cell).prev().remove();
 			cell_menu.hide(200);
 		}
-		alert("No sibling");
+	});
+	$('#tbl_cell_right_del').click(function() {
+		if($(tbl_cell).next().length){
+			$(tbl_cell).next().remove();
+			cell_menu.hide(200);
+		}
+	});
+	$('#tbl_row_del').click(function(){
+		$(tbl_cell).parent('tr').remove();
+		cell_menu.hide(200);
 	});
 
 	$(document).on('mousemove', e => {
