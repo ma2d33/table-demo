@@ -142,15 +142,15 @@
 	}
 
 	$('#tbl_cell_left').click(function() {
-		$(tbl_cell).before('<td onClick="my_funct(this)">val</td>')
+		$(tbl_cell).before('<td onClick="my_funct(this)">New Cell</td>')
 		cell_menu.hide(200);
 	});
 	$('#tbl_cell_right').click(function() {
-		$(tbl_cell).after('<td onClick="my_funct(this)">val</td>')
+		$(tbl_cell).after('<td onClick="my_funct(this)">New Cell</td>')
 		cell_menu.hide(200);
 	});
 	$('#tbl_add_row').click(function() {
-		$(tbl_cell).parent('tr').after('<tr><td onClick="my_funct(this)">val</td></tr>');
+		$(tbl_cell).parent('tr').after('<tr><td onClick="my_funct(this)">New Cell</td></tr>');
 		cell_menu.hide(200);
 	});
 	$('#tbl_cell_left_del').click(function() {
