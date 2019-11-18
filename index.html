@@ -124,9 +124,12 @@
 	editor.wysiwyg();
 
 	editor.on('click',function(e){
-		if(e.target.nodeName != 'TD')
+		if(e.target.nodeName != 'TD'){
 			cell_menu.hide(200);
+		}
+		else{
 		my_funct(e.target);
+		}
 	});
 
 	var tbl_cell;
