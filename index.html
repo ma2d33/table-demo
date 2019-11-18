@@ -60,7 +60,7 @@
 		width: 100%;
 	}
 	.my-table td{
-		width:50%;
+		width:auto;
 		padding: 10px;
 	}
 	#tbl_options{
@@ -89,7 +89,7 @@
 	<section class="container">
 		<div class="btn-toolbar" data-role="editor-toolbar" data-target="#editor">
 			<span class="btn btn-info demo-tooltip" data-tooltip="Create a table" id="btn-table">
-				<a data-edit='insertHTML <table class="table-bordered my-table"><tr><td onClick="my_funct(this)">...</td></tr></table>'>	
+				<a data-edit='insertHTML <table class="table-bordered my-table"><tr><td>...</td></tr></table>'>	
 					<i class="fas fa-table"></i>
 				</a>
 			</span>
@@ -126,6 +126,7 @@
 	editor.on('click',function(e){
 		if(e.target.nodeName != 'TD')
 			cell_menu.hide(200);
+		my_funct(e.target);
 	});
 
 	var tbl_cell;
@@ -142,15 +143,15 @@
 	}
 
 	$('#tbl_cell_left').click(function() {
-		$(tbl_cell).before('<td onClick="my_funct(this)">New Cell</td>')
+		$(tbl_cell).before('<td>New Cell</td>')
 		cell_menu.hide(200);
 	});
 	$('#tbl_cell_right').click(function() {
-		$(tbl_cell).after('<td onClick="my_funct(this)">New Cell</td>')
+		$(tbl_cell).after('<td>New Cell</td>')
 		cell_menu.hide(200);
 	});
 	$('#tbl_add_row').click(function() {
-		$(tbl_cell).parent('tr').after('<tr><td onClick="my_funct(this)">New Cell</td></tr>');
+		$(tbl_cell).parent('tr').after('<tr><td>New Cell</td></tr>');
 		cell_menu.hide(200);
 	});
 	$('#tbl_cell_left_del').click(function() {
