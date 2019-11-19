@@ -88,34 +88,28 @@
       <div class="btn-group">
         <a class="btn" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i class="icon-undo"></i></a>
         <a class="btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="icon-repeat"></i></a>
-
-       <!--  <span class="btn demo-tooltip" data-tooltip="Create a table" id="btn-table"> -->
-          <a  class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-table"></i></a>
-            <table class="dropdown-menu" id="tbl-values">
-              <tbody>
-                <thead>
-                  <tr>
-                    <th>rows</th>
-                    <th>cells</th>
-                    <th></th>
-                  </tr>
-                </thead>
+        <a  class="btn dropdown-toggle" title="Create a table" data-toggle="dropdown"><i class="icon-table"></i></a>
+          <table class="dropdown-menu" id="tbl-values">
+            <tbody>
+              <thead>
                 <tr>
-                  <td><input type="number" name="tbl-rows" min="1" max="99" value="1" /></td>
-                  <td><input type="number" name="tbl-cells" min="1" max="99" value="1" /></td>
-                  <td><button class="btn" data-edit="insertHTML">Add</button></td>
+                  <th>rows</th>
+                  <th>cells</th>
+                  <th></th>
                 </tr>
-              </tbody>
-            </table>
-           <!--  <ul class="dropdown-menu">
-              <li><a data-edit='insertHTML <table class="table-bordered my-table"><tr><td>...</td></tr></table>'>Add</a></li>
-            </ul> -->
-        <!-- </span>   -->
+              </thead>
+              <tr>
+                <td><input type="number" name="tbl-rows" min="1" max="99" value="1" /></td>
+                <td><input type="number" name="tbl-cells" min="1" max="99" value="1" /></td>
+                <td><button class="btn" data-edit="insertHTML">Add</button></td>
+              </tr>
+            </tbody>
+          </table>
       </div>  
       <input type="text" data-edit="inserttext" id="voiceBtn" x-webkit-speech="">
     </div>
 
-    <div id="editor">
+    <div id="my_editor">
       Go ahead&hellip;
     </div>
 
@@ -258,7 +252,7 @@ file inputs, the file contents are read in using the FileReader API and used as 
 		 '<strong>File upload error</strong> '+msg+' </div>').prependTo('#alerts');
 	};
     initToolbarBootstrapBindings();  
-	$('#editor').wysiwyg({ fileUploadError: showErrorAlert} );
+	$('#my_editor').wysiwyg({ fileUploadError: showErrorAlert} );
     window.prettyPrint && prettyPrint();
   });
 </script>
@@ -284,5 +278,5 @@ file inputs, the file contents are read in using the FileReader API and used as 
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="http://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
 <!-- table expansion -->
-<script src="bootstrap-wysiwyg-table.js" defer></script>
+<script src="bootstrap-wysiwyg-table.js"></script>
 </html>
