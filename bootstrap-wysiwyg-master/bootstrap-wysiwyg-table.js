@@ -32,7 +32,12 @@ var editor = $('#editor');
 		cell_menu.hide(200);
 	});
 	$('#tbl_add_row').click(function() {
-		$(tbl_cell).parent('tr').after('<tr><td>New Cell</td></tr>');
+		let num_cells = $(tbl_cell).parent('tr').children('td').length;
+		let cells = "";
+		for(num_cells;num_cells > 0; num_cells--){
+			cells +="<td>New Cell</td>"; 
+		}
+		$(tbl_cell).parent('tr').after('<tr>'+cells+'</tr>');
 		cell_menu.hide(200);
 	});
 	$('#tbl_cell_left_del').click(function() {
