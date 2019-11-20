@@ -52,7 +52,7 @@
 							r += '<tr>'+c+'</tr>';
 						}
 
-						args = '<table class="table-bordered my-table">'+r+'</table>';
+						args = '<table class="table table-bordered my-table">'+r+'</table>';
 						document.execCommand(command, 0, args);
 						updateToolbar();
 						// die();
@@ -194,14 +194,6 @@
 			}
 		});
 
-		
-
-		return this;
-	};
-
-	$.fn.wysiwyg.table = function(){
-		// table extension
-		let editor = this;
 		editor.on('click',function(e){
 		if(e.target.nodeName != 'TD'){
 			cell_menu.hide(200);
@@ -262,6 +254,8 @@
 			mouse_x = e.pageX;
 			mouse_y = e.pageY;
 		}); // end table extension
+
+		return this;
 	};
 
 	$.fn.wysiwyg.defaults = {
