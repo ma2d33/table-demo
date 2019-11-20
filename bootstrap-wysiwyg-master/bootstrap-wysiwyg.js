@@ -194,13 +194,15 @@
 			}
 		});
 
+		// table expansion
 		editor.on('click',function(e){
-		if(e.target.nodeName != 'TD'){
-			cell_menu.hide(200);
-		}
-		else{
-		my_funct(e.target);
-		}
+			if(e.target.nodeName == 'TD' && e.ctrlKey){
+				console.log(e);
+				my_funct(e.target);
+			}
+			else{
+				cell_menu.hide(200);
+			}
 		});
 
 		var tbl_cell;
@@ -228,7 +230,7 @@
 			let num_cells = $(tbl_cell).parent('tr').children('td').length;
 			let cells = "";
 			for(num_cells;num_cells > 0; num_cells--){
-				cells +="<td>New Cell</td>"; 
+				cells +='<td>New Cell</td>'; 
 			}
 			$(tbl_cell).parent('tr').after('<tr>'+cells+'</tr>');
 			cell_menu.hide(200);
@@ -236,12 +238,30 @@
 		$('#tbl_cell_left_del').click(function() {
 			if($(tbl_cell).prev().length){
 				$(tbl_cell).prev().remove();
+				if($(tbl_cell).prev().length){
+					$(tbl_cell)
+					.siblings()
+					.first()
+					.attr("colspan","100%");
+				}
+				else{
+					$(tbl_cell).attr("colspan","100%");
+				}
 				cell_menu.hide(200);
 			}
 		});
 		$('#tbl_cell_right_del').click(function() {
 			if($(tbl_cell).next().length){
 				$(tbl_cell).next().remove();
+				if($(tbl_cell).next().length){
+					$(tbl_cell)
+					.siblings()
+					.last()
+					.attr("colspan","100%");
+				}
+				else{
+					$(tbl_cell).attr('colspan', '100%');
+				}
 				cell_menu.hide(200);
 			}
 		});
