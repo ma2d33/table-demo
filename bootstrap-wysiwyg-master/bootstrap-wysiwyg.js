@@ -195,45 +195,129 @@
 		});
 
 		// table expansion
-		editor.on('click',function(e){
-			if(e.target.nodeName == 'TD' && e.ctrlKey){
-				console.log(e);
-				my_funct(e.target);
-			}
-			else{
-				cell_menu.hide(200);
-			}
-		});
 
 		var tbl_cell;
 		var mouse_x,mouse_y;
-		var cell_menu = $("#tbl_options");
+		var tblMenuOpen = true;
+		var cell_menu = '<nav id="table_cell_menu">'
+						+'<ul>'
+							+'<li id="deleteTable" title="Delete Table">Delete Table</li>'
+							+'<li id="addTopRow" title="Add row on top">Add row top</li>'
+							+'<li id="addBottomRow" title="Add row on bottom">Add row bottom</li>'
+							+'<li id="deleteRow" title="Delete this row">Delete row</li>'
+							+'<li id="addColLeft" title="Add column right">Add column left</li>'
+							+'<li id="addColRight" title="Add column left">Add column right</li>'
+							+'<li id="deleteColumn" title="Delete this column">Delete Column</li>'
+							+'<li id="combainCells" title="combain cells">combain</li>'
+							+'<li id="colorPicker" title="color">Pic color</li>'
+						+'</ul>'	
+					'</nav>';
 
-		function my_funct(e){
-		  tbl_cell = e;		
-		  cell_menu.css({
-		  	'top':mouse_y,
-		  	'left':mouse_x
-		  });
-		  cell_menu.show(200);
+		editor.after(cell_menu);			
+
+		editor.on('click',function(e){
+			if(e.target.nodeName == 'TD' && e.ctrlKey){
+				mouse_x = e.pageX;
+				mouse_y = e.pageY;
+				tbl_cell = e.target;
+				showTblMenu();
+			}
+			else{
+				hideTblMenu(cell_menu)
+			}
+		});
+
+		function showTblMenu(){
+			if(tblMenuOpen){
+				$('#table_cell_menu').css({
+					'top':mouse_y - 55,
+        			'left':mouse_x - 55
+				});
+				$('#table_cell_menu').show();
+				$('#table_cell_menu').animate({
+					height:"30px"
+				},100,function(){tblMenuOpen=false});
+			}
+			else {
+				$('#table_cell_menu').animate({
+					height:0,
+				},100,function(){tblMenuOpen=true,$('#table_cell_menu').hide()});
+			}
 		}
 
+		function hideTblMenu(){
+			$('#table_cell_menu').animate({
+				height:0,
+			},100,function(){tblMenuOpen=true,$('#table_cell_menu').hide()});
+		}
+
+		// button functions
+			$('#deleteTable').click(function(){
+				$(tbl_cell).parents('table').remove();
+				hideTblMenu(cell_menu)
+			});
+
+			$('#deleteRow').click(function(){
+				$(tbl_cell).parent('tr').remove();
+				hideTblMenu(cell_menu)
+			});
+
+			$('#addTopRow').click(function(){
+				let num_cells = $(tbl_cell).parent('tr').children('td').length;
+				let cells = "";
+				for(num_cells;num_cells > 0; num_cells--){
+					cells +='<td>New created cell</td>'; 
+				}
+				$(tbl_cell).parent('tr').before('<tr>'+cells+'</tr>');
+				hideTblMenu(cell_menu);
+			});
+			$('#addBottomRow').click(function(){
+				let num_cells = $(tbl_cell).parent('tr').children('td').length;
+				let cells = "";
+				for(num_cells;num_cells > 0; num_cells--){
+					cells +='<td>New created cell</td>'; 
+				}
+				$(tbl_cell).parent('tr').after('<tr>'+cells+'</tr>');
+				hideTblMenu(cell_menu);
+			});
+
+			$('#addColLeft').click(function(){
+				let ind = $(tbl_cell).index();
+				let table_rows = $(tbl_cell).parents('table').find('>tbody>tr');
+				table_rows.each(function(e, d) {
+					$(d).children('td').eq(ind).before('<td>New Created Cell</td>');
+				});
+				hideTblMenu(cell_menu)
+			});
+
+			$('#addColRight').click(function(){
+				let ind = $(tbl_cell).index();
+				let table_rows = $(tbl_cell).parents('table').find('>tbody>tr');
+				table_rows.each(function(e, d) {
+					$(d).children('td').eq(ind).after('<td>New Created Cell</td>');
+				});
+				hideTblMenu(cell_menu)
+			});
+
+			$('#deleteColumn').click(function(){
+				let ind = $(tbl_cell).index();
+				let table_rows = $(tbl_cell).parents('table').find('>tbody>tr');
+				table_rows.each(function(e, d) {
+					$(d).children('td').eq(ind).remove();
+				});
+				hideTblMenu(cell_menu)
+			});
+			
+		// ----------------
+
+		// bonus functions
 		$('#tbl_cell_left').click(function() {
 			$(tbl_cell).before('<td>New Cell</td>')
-			cell_menu.hide(200);
+			hideTblMenu(cell_menu)
 		});
 		$('#tbl_cell_right').click(function() {
 			$(tbl_cell).after('<td>New Cell</td>')
-			cell_menu.hide(200);
-		});
-		$('#tbl_add_row').click(function() {
-			let num_cells = $(tbl_cell).parent('tr').children('td').length;
-			let cells = "";
-			for(num_cells;num_cells > 0; num_cells--){
-				cells +='<td>New Cell</td>'; 
-			}
-			$(tbl_cell).parent('tr').after('<tr>'+cells+'</tr>');
-			cell_menu.hide(200);
+			hideTblMenu(cell_menu)
 		});
 		$('#tbl_cell_left_del').click(function() {
 			if($(tbl_cell).prev().length){
@@ -247,7 +331,7 @@
 				else{
 					$(tbl_cell).attr("colspan","100%");
 				}
-				cell_menu.hide(200);
+				hideTblMenu(cell_menu)
 			}
 		});
 		$('#tbl_cell_right_del').click(function() {
@@ -262,18 +346,10 @@
 				else{
 					$(tbl_cell).attr('colspan', '100%');
 				}
-				cell_menu.hide(200);
+				hideTblMenu(cell_menu)
 			}
 		});
-		$('#tbl_row_del').click(function(){
-			$(tbl_cell).parent('tr').remove();
-			cell_menu.hide(200);
-		});
-
-		$(document).on('mousemove', e => {
-			mouse_x = e.pageX;
-			mouse_y = e.pageY;
-		}); // end table extension
+		// -----------
 
 		return this;
 	};
