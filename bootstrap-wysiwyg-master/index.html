@@ -17,7 +17,9 @@
     <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
     <script src="external/google-code-prettify/prettify.js"></script>
 		<link href="index.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="colorPicker/css/farbtastic.css"> <!-- color picker css -->
     <script src="bootstrap-wysiwyg.js"></script>
+
   </head>
   <body>
 
@@ -112,7 +114,12 @@
     <div id="my_editor">
       Go ahead&hellip;
     </div>
-    
+    <!-- color picker -->
+    <div id="colPicker">
+      
+    </div>
+    <!-- ------------ -->
+
   </div>
 
 <div class="row">
@@ -267,5 +274,7 @@ file inputs, the file contents are read in using the FileReader API and used as 
 
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="http://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
+<!-- color picker -->
+<script type="text/javascript" src="colorPicker/js/farbtastic.js"></script>  <!-- picker liblary -->
 
 </html>

@@ -82,20 +82,20 @@ div[data-role="editor-toolbar"] {
 
   /*circle table menu*/
   
-  #table_cell_menu ul>li{
+  #tableCellMenu ul>li{
   list-style:none;
   display:inline;
   padding:10px;
   cursor:pointer;
   }
-  #table_cell_menu ul>li:hover{
+  #tableCellMenu ul>li:hover{
     background-color:steelblue;
     color:#000;
   }
-  #table_cell_menu ul{
+  #tableCellMenu ul{
     margin: 0;
   }
-  #table_cell_menu{
+  #tableCellMenu{
     text-align:left;
     background-color:#222;
     color:#eee;
@@ -118,4 +118,25 @@ div[data-role="editor-toolbar"] {
   #tbl-values input{
     margin: 0;
     width: 50px;
+  }
+  /*color picker*/
+  #colPicker{
+    width: auto;
+    position: absolute;
+    box-shadow: 5px 3px 11px 0px black;
+    border-radius: 8px;
+    display: block;
+    background-color: #fff
+  }
+  #closePicker{
+    position: absolute;
+    top: -25px;
+  }
+  #dragPicker{
+    position: absolute;
+    top: -25px;
+    left:25px;
+  }
+  .farbtastic{
+    display: none;
   }

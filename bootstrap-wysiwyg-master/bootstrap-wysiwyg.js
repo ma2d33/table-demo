@@ -196,10 +196,10 @@
 
 		// table expansion
 
-		var tbl_cell;
-		var mouse_x,mouse_y;
+		var tblCell;
+		var mouseX,mouseY;
 		var tblMenuOpen = true;
-		var cell_menu = '<nav id="table_cell_menu">'
+		var cellMenu = '<nav id="tableCellMenu">'
 						+'<ul>'
 							+'<li id="deleteTable" title="Delete Table">Delete Table</li>'
 							+'<li id="addTopRow" title="Add row on top">Add row top</li>'
@@ -213,140 +213,156 @@
 						+'</ul>'	
 					'</nav>';
 
-		editor.after(cell_menu);			
+		editor.after(cellMenu);			
 
 		editor.on('click',function(e){
 			if(e.target.nodeName == 'TD' && e.ctrlKey){
-				mouse_x = e.pageX;
-				mouse_y = e.pageY;
-				tbl_cell = e.target;
+				mouseX = e.pageX;
+				mouseY = e.pageY;
+				tblCell = e.target;
 				showTblMenu();
 			}
 			else{
-				hideTblMenu(cell_menu)
+				hideTblMenu(cellMenu)
 			}
 		});
 
 		function showTblMenu(){
 			if(tblMenuOpen){
-				$('#table_cell_menu').css({
-					'top':mouse_y - 55,
-        			'left':mouse_x - 55
+				$('#tableCellMenu').css({
+					'top':mouseY - 55,
+        			'left':mouseX - 55
 				});
-				$('#table_cell_menu').show();
-				$('#table_cell_menu').animate({
+				$('#tableCellMenu').show();
+				$('#tableCellMenu').animate({
 					height:"30px"
 				},100,function(){tblMenuOpen=false});
 			}
 			else {
-				$('#table_cell_menu').animate({
+				$('#tableCellMenu').animate({
 					height:0,
-				},100,function(){tblMenuOpen=true,$('#table_cell_menu').hide()});
+				},100,function(){tblMenuOpen=true,$('#tableCellMenu').hide()});
 			}
 		}
 
 		function hideTblMenu(){
-			$('#table_cell_menu').animate({
+			$('#tableCellMenu').animate({
 				height:0,
-			},100,function(){tblMenuOpen=true,$('#table_cell_menu').hide()});
+			},100,function(){tblMenuOpen=true,$('#tableCellMenu').hide()});
 		}
 
 		// button functions
 			$('#deleteTable').click(function(){
-				$(tbl_cell).parents('table').remove();
-				hideTblMenu(cell_menu)
+				$(tblCell).parents('table').remove();
+				hideTblMenu(cellMenu)
 			});
 
 			$('#deleteRow').click(function(){
-				$(tbl_cell).parent('tr').remove();
-				hideTblMenu(cell_menu)
+				$(tblCell).parent('tr').remove();
+				hideTblMenu(cellMenu)
 			});
 
 			$('#addTopRow').click(function(){
-				let num_cells = $(tbl_cell).parent('tr').children('td').length;
+				let num_cells = $(tblCell).parent('tr').children('td').length;
 				let cells = "";
 				for(num_cells;num_cells > 0; num_cells--){
 					cells +='<td>New created cell</td>'; 
 				}
-				$(tbl_cell).parent('tr').before('<tr>'+cells+'</tr>');
-				hideTblMenu(cell_menu);
+				$(tblCell).parent('tr').before('<tr>'+cells+'</tr>');
+				hideTblMenu(cellMenu);
 			});
 			$('#addBottomRow').click(function(){
-				let num_cells = $(tbl_cell).parent('tr').children('td').length;
+				let num_cells = $(tblCell).parent('tr').children('td').length;
 				let cells = "";
 				for(num_cells;num_cells > 0; num_cells--){
 					cells +='<td>New created cell</td>'; 
 				}
-				$(tbl_cell).parent('tr').after('<tr>'+cells+'</tr>');
-				hideTblMenu(cell_menu);
+				$(tblCell).parent('tr').after('<tr>'+cells+'</tr>');
+				hideTblMenu(cellMenu);
 			});
 
 			$('#addColLeft').click(function(){
-				let ind = $(tbl_cell).index();
-				let table_rows = $(tbl_cell).parents('table').find('>tbody>tr');
+				let ind = $(tblCell).index();
+				let table_rows = $(tblCell).parents('table').find('>tbody>tr');
 				table_rows.each(function(e, d) {
 					$(d).children('td').eq(ind).before('<td>New Created Cell</td>');
 				});
-				hideTblMenu(cell_menu)
+				hideTblMenu(cellMenu)
 			});
 
 			$('#addColRight').click(function(){
-				let ind = $(tbl_cell).index();
-				let table_rows = $(tbl_cell).parents('table').find('>tbody>tr');
+				let ind = $(tblCell).index();
+				let table_rows = $(tblCell).parents('table').find('>tbody>tr');
 				table_rows.each(function(e, d) {
 					$(d).children('td').eq(ind).after('<td>New Created Cell</td>');
 				});
-				hideTblMenu(cell_menu)
+				hideTblMenu(cellMenu)
 			});
 
 			$('#deleteColumn').click(function(){
-				let ind = $(tbl_cell).index();
-				let table_rows = $(tbl_cell).parents('table').find('>tbody>tr');
+				let ind = $(tblCell).index();
+				let table_rows = $(tblCell).parents('table').find('>tbody>tr');
 				table_rows.each(function(e, d) {
 					$(d).children('td').eq(ind).remove();
 				});
-				hideTblMenu(cell_menu)
+				hideTblMenu(cellMenu)
 			});
-			
+			$('#colorPicker').click(function(e){
+				$('#colPicker').css({
+					'top':e.pageY - 70,
+					'left':e.pageX - 70,
+				});
+				$('#colPicker').farbtastic(function(e){
+					$(tblCell).css('background-color',e);
+				});
+				$('.farbtastic').show();
+				$('#colPicker').append(function(){
+					return $('<button id="closePicker">X</button>').click(function(){
+						$('.farbtastic').hide();
+						$(this).remove();
+					});
+				});
+				hideTblMenu(cellMenu)
+			});			
 		// ----------------
 
 		// bonus functions
-		$('#tbl_cell_left').click(function() {
-			$(tbl_cell).before('<td>New Cell</td>')
-			hideTblMenu(cell_menu)
+		$('#tblCell_left').click(function() {
+			$(tblCell).before('<td>New Cell</td>')
+			hideTblMenu(cellMenu)
 		});
-		$('#tbl_cell_right').click(function() {
-			$(tbl_cell).after('<td>New Cell</td>')
-			hideTblMenu(cell_menu)
+		$('#tblCell_right').click(function() {
+			$(tblCell).after('<td>New Cell</td>')
+			hideTblMenu(cellMenu)
 		});
-		$('#tbl_cell_left_del').click(function() {
-			if($(tbl_cell).prev().length){
-				$(tbl_cell).prev().remove();
-				if($(tbl_cell).prev().length){
-					$(tbl_cell)
+		$('#tblCell_left_del').click(function() {
+			if($(tblCell).prev().length){
+				$(tblCell).prev().remove();
+				if($(tblCell).prev().length){
+					$(tblCell)
 					.siblings()
 					.first()
 					.attr("colspan","100%");
 				}
 				else{
-					$(tbl_cell).attr("colspan","100%");
+					$(tblCell).attr("colspan","100%");
 				}
-				hideTblMenu(cell_menu)
+				hideTblMenu(cellMenu)
 			}
 		});
-		$('#tbl_cell_right_del').click(function() {
-			if($(tbl_cell).next().length){
-				$(tbl_cell).next().remove();
-				if($(tbl_cell).next().length){
-					$(tbl_cell)
+		$('#tblCell_right_del').click(function() {
+			if($(tblCell).next().length){
+				$(tblCell).next().remove();
+				if($(tblCell).next().length){
+					$(tblCell)
 					.siblings()
 					.last()
 					.attr("colspan","100%");
 				}
 				else{
-					$(tbl_cell).attr('colspan', '100%');
+					$(tblCell).attr('colspan', '100%');
 				}
-				hideTblMenu(cell_menu)
+				hideTblMenu(cellMenu)
 			}
 		});
 		// -----------
