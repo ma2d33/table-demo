@@ -311,10 +311,10 @@
 		});
 		$('#combainCells').click(function(){
 			let a = $(startCell).siblings('td.selectedCell').andSelf().length;
-			$(startCell).toggleClass('selectedCell');
+			$(startCell).removeClass('selectedCell');
 			$(thisTable).find('td.selectedCell').remove();
 			let rows = $(thisTable).children('tbody').children('tr').filter('[focused="1"]').length;
-			$(tblCell).attr({'colspan':a,'rowspan':rows});
+			$(startCell).attr({'colspan':a,'rowspan':rows});
 			hideTblMenu(cellMenu);
 		});
 		$('#colorPicker').click(function(e){
