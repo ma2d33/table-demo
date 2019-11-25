@@ -140,3 +140,11 @@ div[data-role="editor-toolbar"] {
   .farbtastic{
     display: none;
   }
+
+  /* selected cells*/
+  .selectedCell{
+	background-color:#aaa;
+  }
+  /*---------------*/
+
+

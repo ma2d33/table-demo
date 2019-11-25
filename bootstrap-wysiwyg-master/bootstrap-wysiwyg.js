@@ -199,6 +199,7 @@
 		var tblCell;
 		var mouseX,mouseY;
 		var tblMenuOpen = true;
+		var thisTable;
 		var cellMenu = '<nav id="tableCellMenu">'
 						+'<ul>'
 							+'<li id="deleteTable" title="Delete Table">Delete Table</li>'
@@ -220,10 +221,11 @@
 				mouseX = e.pageX;
 				mouseY = e.pageY;
 				tblCell = e.target;
+				thisTable = $(e.target).parents('table');
 				showTblMenu();
 			}
 			else{
-				hideTblMenu(cellMenu)
+				hideTblMenu(cellMenu);
 			}
 		});
 
@@ -252,78 +254,133 @@
 		}
 
 		// button functions
-			$('#deleteTable').click(function(){
-				$(tblCell).parents('table').remove();
-				hideTblMenu(cellMenu)
-			});
+		$('#deleteTable').click(function(){
+			$(tblCell).parents('table').remove();
+			hideTblMenu(cellMenu);
+		});
 
-			$('#deleteRow').click(function(){
-				$(tblCell).parent('tr').remove();
-				hideTblMenu(cellMenu)
-			});
+		$('#deleteRow').click(function(){
+			$(tblCell).parent('tr').remove();
+			hideTblMenu(cellMenu);
+		});
 
-			$('#addTopRow').click(function(){
-				let num_cells = $(tblCell).parent('tr').children('td').length;
-				let cells = "";
-				for(num_cells;num_cells > 0; num_cells--){
-					cells +='<td>New created cell</td>'; 
-				}
-				$(tblCell).parent('tr').before('<tr>'+cells+'</tr>');
-				hideTblMenu(cellMenu);
-			});
-			$('#addBottomRow').click(function(){
-				let num_cells = $(tblCell).parent('tr').children('td').length;
-				let cells = "";
-				for(num_cells;num_cells > 0; num_cells--){
-					cells +='<td>New created cell</td>'; 
-				}
-				$(tblCell).parent('tr').after('<tr>'+cells+'</tr>');
-				hideTblMenu(cellMenu);
-			});
+		$('#addTopRow').click(function(){
+			let num_cells = $(tblCell).parent('tr').children('td').length;
+			let cells = "";
+			for(num_cells;num_cells > 0; num_cells--){
+				cells +='<td>New created cell</td>'; 
+			}
+			$(tblCell).parent('tr').before('<tr>'+cells+'</tr>');
+			hideTblMenu(cellMenu);
+		});
+		$('#addBottomRow').click(function(){
+			let num_cells = $(tblCell).parent('tr').children('td').length;
+			let cells = "";
+			for(num_cells;num_cells > 0; num_cells--){
+				cells +='<td>New created cell</td>'; 
+			}
+			$(tblCell).parent('tr').after('<tr>'+cells+'</tr>');
+			hideTblMenu(cellMenu);
+		});
 
-			$('#addColLeft').click(function(){
-				let ind = $(tblCell).index();
-				let table_rows = $(tblCell).parents('table').find('>tbody>tr');
-				table_rows.each(function(e, d) {
-					$(d).children('td').eq(ind).before('<td>New Created Cell</td>');
-				});
-				hideTblMenu(cellMenu)
+		$('#addColLeft').click(function(){
+			let ind = $(tblCell).index();
+			let table_rows = $(tblCell).parents('table').find('>tbody>tr');
+			table_rows.each(function(e, d) {
+				$(d).children('td').eq(ind).before('<td>New Created Cell</td>');
 			});
+			hideTblMenu(cellMenu);
+		});
 
-			$('#addColRight').click(function(){
-				let ind = $(tblCell).index();
-				let table_rows = $(tblCell).parents('table').find('>tbody>tr');
-				table_rows.each(function(e, d) {
-					$(d).children('td').eq(ind).after('<td>New Created Cell</td>');
-				});
-				hideTblMenu(cellMenu)
+		$('#addColRight').click(function(){
+			let ind = $(tblCell).index();
+			let table_rows = $(tblCell).parents('table').find('>tbody>tr');
+			table_rows.each(function(e, d) {
+				$(d).children('td').eq(ind).after('<td>New Created Cell</td>');
 			});
+			hideTblMenu(cellMenu);
+		});
 
-			$('#deleteColumn').click(function(){
-				let ind = $(tblCell).index();
-				let table_rows = $(tblCell).parents('table').find('>tbody>tr');
-				table_rows.each(function(e, d) {
-					$(d).children('td').eq(ind).remove();
-				});
-				hideTblMenu(cellMenu)
+		$('#deleteColumn').click(function(){
+			let ind = $(tblCell).index();
+			let table_rows = $(tblCell).parents('table').find('>tbody>tr');
+			table_rows.each(function(e, d) {
+				$(d).children('td').eq(ind).remove();
 			});
-			$('#colorPicker').click(function(e){
-				$('#colPicker').css({
-					'top':e.pageY - 70,
-					'left':e.pageX - 70,
+			hideTblMenu(cellMenu);
+		});
+		$('#combainCells').click(function(){
+			let a = $(startCell).siblings('td.selectedCell').andSelf().length;
+			$(startCell).toggleClass('selectedCell');
+			$(thisTable).find('td.selectedCell').remove();
+			let rows = $(thisTable).children('tbody').children('tr').filter('[focused="1"]').length;
+			$(tblCell).attr({'colspan':a,'rowspan':rows});
+			hideTblMenu(cellMenu);
+		});
+		$('#colorPicker').click(function(e){
+			$('#colPicker').css({
+				'top':e.pageY - 70,
+				'left':e.pageX - 70,
+			});
+			$('#colPicker').farbtastic(function(e){
+				$(tblCell).css('background-color',e);
+			});
+			$('.farbtastic').show();
+			$('#colPicker').append(function(){
+				return $('<button id="closePicker">X</button>').click(function(){
+					$('.farbtastic').hide();
+					$(this).remove();
 				});
-				$('#colPicker').farbtastic(function(e){
-					$(tblCell).css('background-color',e);
+			});
+			hideTblMenu(cellMenu);
+		});			
+
+		// cells marging
+		var isMouseDown = false,
+		startCell,
+		allTableCells,
+		isCellSelected,
+		tableSelected;
+		var selectedIndexes = [];
+		editor.on('mousedown',function(e){
+			if(e.target.nodeName == 'TD' && e.altKey){
+				isMouseDown = true;
+				tableSelected = $(e.target).parents('table');
+				tableSelected.find('td.selectedCell').removeClass('selectedCell');
+				$(e.target).toggleClass('selectedCell');
+				startCell=e.target;
+				$(e.target).parents('tr').toggleClass('firstActiveTR');
+				selectedIndexes.push($(e.target).index());
+				isCellSelected = $(e.target).hasClass('selectedCell');
+				allTableCells = $(e.target).siblings().andSelf(); 
+				$(allTableCells).mouseover(function(){
+					if(isMouseDown){
+						selectedIndexes.push($(this).index());
+						console.log(selectedIndexes);
+						$(this).toggleClass('selectedCell',isCellSelected);
+					}
 				});
-				$('.farbtastic').show();
-				$('#colPicker').append(function(){
-					return $('<button id="closePicker">X</button>').click(function(){
-						$('.farbtastic').hide();
-						$(this).remove();
+				$(tableSelected)
+					.children('tbody')
+					.children('tr')
+					.mouseover(function() {
+						for(var i = 0;i < selectedIndexes.length;i++){
+							$(this).children('td').eq(selectedIndexes[i]).addClass('selectedCell');
+							$(this).attr('focused','1');
+						}
 					});
-				});
-				hideTblMenu(cellMenu)
-			});			
+				return false;
+			}
+		});
+		editor.on('mouseup',function(){
+			isMouseDown = false;
+			selectedIndexes = [];
+			console.log(selectedIndexes);
+		});
+
+		
+
+		// -------------
 		// ----------------
 
 		// bonus functions
