@@ -217,7 +217,7 @@
 		editor.after(cellMenu);			
 
 		editor.on('click',function(e){
-			if(e.target.nodeName == 'TD' && e.ctrlKey){
+			if($(e.target).parents('table.my-table').length == 1 && e.ctrlKey){
 				mouseX = e.pageX;
 				mouseY = e.pageY;
 				tblCell = e.target;
@@ -310,11 +310,14 @@
 			hideTblMenu(cellMenu);
 		});
 		$('#combainCells').click(function(){
-			let a = $(startCell).siblings('td.selectedCell').andSelf().length;
-			$(startCell).removeClass('selectedCell');
+			let r = $(thisTable).find('tr[focused]');
+			let c = $(r[0]).find('td.selectedCell');
+			let cells = $(c[0]).siblings('td.selectedCell').andSelf().length;
+			let rows = $(thisTable).find('tr[focused]').length;
+			$(c[0]).removeClass('selectedCell');
 			$(thisTable).find('td.selectedCell').remove();
-			let rows = $(thisTable).children('tbody').children('tr').filter('[focused="1"]').length;
-			$(startCell).attr({'colspan':a,'rowspan':rows});
+			$(c[0]).attr({'colspan':cells,'rowspan':rows});
+			r.removeAttr('focused');
 			hideTblMenu(cellMenu);
 		});
 		$('#colorPicker').click(function(e){
@@ -335,28 +338,27 @@
 			hideTblMenu(cellMenu);
 		});			
 
-		// cells marging
+		// cells selection
 		var isMouseDown = false,
-		startCell,
 		allTableCells,
 		isCellSelected,
 		tableSelected;
 		var selectedIndexes = [];
 		editor.on('mousedown',function(e){
-			if(e.target.nodeName == 'TD' && e.altKey){
+			if($(e.target).parents('table.my-table').length == 1 && e.altKey){
 				isMouseDown = true;
 				tableSelected = $(e.target).parents('table');
+				tableSelected.find('tr[focused]').removeAttr('focused');
 				tableSelected.find('td.selectedCell').removeClass('selectedCell');
 				$(e.target).toggleClass('selectedCell');
-				startCell=e.target;
 				$(e.target).parents('tr').toggleClass('firstActiveTR');
+				$(e.target).parents('tr').attr('focused', '1');
 				selectedIndexes.push($(e.target).index());
 				isCellSelected = $(e.target).hasClass('selectedCell');
 				allTableCells = $(e.target).siblings().andSelf(); 
 				$(allTableCells).mouseover(function(){
 					if(isMouseDown){
 						selectedIndexes.push($(this).index());
-						console.log(selectedIndexes);
 						$(this).toggleClass('selectedCell',isCellSelected);
 					}
 				});
@@ -375,7 +377,11 @@
 		editor.on('mouseup',function(){
 			isMouseDown = false;
 			selectedIndexes = [];
-			console.log(selectedIndexes);
+		});
+		editor.on('click',function(e){
+			if($(e.target).parents('table.my-table').length == 0){
+				$('.my-table').find('td.selectedCell').removeClass('selectedCell');
+			}
 		});
 
 		

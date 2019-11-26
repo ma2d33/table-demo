@@ -3,8 +3,8 @@
  */
 
 #my_editor {
-	max-height: 250px;
-	height: 250px;
+	max-height: 1000px;
+  height: 800px;
 	background-color: white;
 	border-collapse: separate; 
 	border: 1px solid rgb(204, 204, 204); 
@@ -43,6 +43,15 @@ div[data-role="editor-toolbar"] {
 
 
 /*table css*/
+
+.activeCell{
+  animation: actCell 1s;
+}
+@keyframes actCell{
+  from{background-color: #fff;}
+  to{background-color: #dbf5bf}
+}
+
 .demo-tooltip::after{
     background: rgba(0, 0, 0, 0.8);
     border-radius: 8px 8px 8px 0px;
