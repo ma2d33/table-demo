@@ -220,7 +220,7 @@
 			if($(e.target).parents('table.my-table').length == 1 && e.ctrlKey){
 				mouseX = e.pageX;
 				mouseY = e.pageY;
-				tblCell = e.target;
+				tblCell = checkCell(e.target);
 				thisTable = $(e.target).parents('table');
 				showTblMenu();
 			}
@@ -228,6 +228,15 @@
 				hideTblMenu(cellMenu);
 			}
 		});
+
+		function checkCell(e){
+			if($(e).is("td")){
+				return $(e);
+			}
+			else{
+				return $(e).parents('td').last();
+			}
+		};
 
 		function showTblMenu(){
 			if(tblMenuOpen){
