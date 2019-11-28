@@ -356,15 +356,16 @@
 		editor.on('mousedown',function(e){
 			if($(e.target).parents('table.my-table').length == 1 && e.altKey){
 				isMouseDown = true;
-				tableSelected = $(e.target).parents('table');
+				let cell = checkCell(e.target);
+				tableSelected = $(cell).parents('table');
 				tableSelected.find('tr[focused]').removeAttr('focused');
 				tableSelected.find('td.selectedCell').removeClass('selectedCell');
-				$(e.target).toggleClass('selectedCell');
-				$(e.target).parents('tr').toggleClass('firstActiveTR');
-				$(e.target).parents('tr').attr('focused', '1');
-				selectedIndexes.push($(e.target).index());
-				isCellSelected = $(e.target).hasClass('selectedCell');
-				allTableCells = $(e.target).siblings().andSelf(); 
+				$(cell).toggleClass('selectedCell');
+				$(cell).parents('tr').toggleClass('firstActiveTR');
+				$(cell).parents('tr').attr('focused', '1');
+				selectedIndexes.push($(cell).index());
+				isCellSelected = $(cell).hasClass('selectedCell');
+				allTableCells = $(cell).siblings().andSelf(); 
 				$(allTableCells).mouseover(function(){
 					if(isMouseDown){
 						selectedIndexes.push($(this).index());
