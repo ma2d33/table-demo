@@ -90,7 +90,7 @@
       <div class="btn-group">
         <a class="btn" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i class="icon-undo"></i></a>
         <a class="btn" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="icon-repeat"></i></a>
-        <a  class="btn dropdown-toggle" title="Create a table" data-toggle="dropdown"><i class="icon-table"></i></a>
+        <a  class="btn dropdown-toggle" title="Create a table" id="toolbarTblBtn" data-toggle="dropdown"><i class="icon-table"></i></a>
           <table class="dropdown-menu" id="tbl-values">
             <tbody>
               <thead>
@@ -249,7 +249,7 @@ file inputs, the file contents are read in using the FileReader API and used as 
 		 '<strong>File upload error</strong> '+msg+' </div>').prependTo('#alerts');
 	};
     initToolbarBootstrapBindings();  
-	$('#my_editor').wysiwyg({ fileUploadError: showErrorAlert} );
+	$('#my_editor').wysiwyg({ fileUploadError: showErrorAlert,enableTable:true} );
     window.prettyPrint && prettyPrint();
   });
 </script>

@@ -195,8 +195,9 @@
 		});
 
 		// table expansion
-
-		var tblCell;
+		var createTbl = $.extend({}, userOptions);
+		if(createTbl.enableTable){
+			var tblCell;
 		var mouseX,mouseY;
 		var tblMenuOpen = true;
 		var thisTable;
@@ -439,6 +440,13 @@
 			}
 		});
 		// -----------
+		}
+		else {
+			$('#toolbarTblBtn').hide();
+		};
+
+
+		
 
 		return this;
 	};
@@ -466,3 +474,4 @@
 		fileUploadError: function (reason, detail) { console.log("File upload error", reason, detail); }
 	};
 }(window.jQuery));
+
