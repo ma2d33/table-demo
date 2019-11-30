@@ -249,7 +249,7 @@ file inputs, the file contents are read in using the FileReader API and used as 
 		 '<strong>File upload error</strong> '+msg+' </div>').prependTo('#alerts');
 	};
     initToolbarBootstrapBindings();  
-	$('#my_editor').wysiwyg({ fileUploadError: showErrorAlert,enableTable:true} );
+	$('#my_editor').wysiwyg({ fileUploadError: showErrorAlert});
     window.prettyPrint && prettyPrint();
   });
 </script>

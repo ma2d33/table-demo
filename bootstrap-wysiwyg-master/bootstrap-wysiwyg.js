@@ -35,6 +35,9 @@
 					});
 				}
 			},
+
+			createTbl = $.extend({},$.fn.wysiwyg.tableOptions, userOptions),//table extension options
+
 			execCommand = function (commandWithArgs, valueArg) {
 				var commandArr = commandWithArgs.split(' '),
 					command = commandArr.shift(),
@@ -52,7 +55,7 @@
 							r += '<tr>'+c+'</tr>';
 						}
 
-						args = '<table class="table table-bordered my-table">'+r+'</table>';
+						args = '<table class="table table-bordered '+createTbl.tableClass+'">'+r+'</table>';
 						document.execCommand(command, 0, args);
 						updateToolbar();
 						// die();
@@ -195,260 +198,261 @@
 		});
 
 		// table expansion
-		var createTbl = $.extend({}, userOptions);
-		if(createTbl.enableTable){
-			var tblCell;
-		var mouseX,mouseY;
-		var tblMenuOpen = true;
-		var thisTable;
-		var cellMenu = '<nav id="tableCellMenu">'
-						+'<ul>'
-							+'<li id="deleteTable" title="Delete Table">Delete Table</li>'
-							+'<li id="addTopRow" title="Add row on top">Add row top</li>'
-							+'<li id="addBottomRow" title="Add row on bottom">Add row bottom</li>'
-							+'<li id="deleteRow" title="Delete this row">Delete row</li>'
-							+'<li id="addColLeft" title="Add column right">Add column left</li>'
-							+'<li id="addColRight" title="Add column left">Add column right</li>'
-							+'<li id="deleteColumn" title="Delete this column">Delete Column</li>'
-							+'<li id="combainCells" title="combain cells">combain</li>'
-							+'<li id="colorPicker" title="color">Pic color</li>'
-						+'</ul>'	
-					'</nav>';
+		if(createTbl.tableEnabled){
+			var tblCell,
+			mouseX,mouseY,
+			tblMenuOpen = true,
+			thisTable,
+			cellMenu = '<nav id="tableCellMenu">'
+							+'<ul>'
+								+'<li id="deleteTable" title="Delete Table">Delete Table</li>'
+								+'<li id="addTopRow" title="Add row on top">Add row top</li>'
+								+'<li id="addBottomRow" title="Add row on bottom">Add row bottom</li>'
+								+'<li id="deleteRow" title="Delete this row">Delete row</li>'
+								+'<li id="addColLeft" title="Add column right">Add column left</li>'
+								+'<li id="addColRight" title="Add column left">Add column right</li>'
+								+'<li id="deleteColumn" title="Delete this column">Delete Column</li>'
+								+'<li id="combainCells" title="combain cells">combain</li>'
+								+'<li id="colorPicker" title="color">Pic color</li>'
+							+'</ul>'	
+						+'</nav>';			
 
-		editor.after(cellMenu);			
+			editor.after(cellMenu);		
 
-		editor.on('click',function(e){
-			if($(e.target).parents('table.my-table').length == 1 && e.ctrlKey){
-				mouseX = e.pageX;
-				mouseY = e.pageY;
-				tblCell = checkCell(e.target);
-				thisTable = $(e.target).parents('table');
-				showTblMenu();
-			}
-			else{
-				hideTblMenu(cellMenu);
-			}
-		});
+			editor.on('click',function(e){
+				if($(e.target).parents('table.'+createTbl.tableClass+'').length == 1 && e.ctrlKey){
+					mouseX = e.pageX;
+					mouseY = e.pageY;
+					tblCell = checkCell(e.target);
+					thisTable = $(e.target).parents('table');
+					showTblMenu();
+				}
+				else{
+					hideTblMenu(cellMenu);
+				}
+			});
 
-		function checkCell(e){
-			if($(e).is("td")){
-				return $(e);
-			}
-			else{
-				return $(e).parents('td').last();
-			}
-		};
+			function checkCell(e){
+				if($(e).is("td")){
+					return $(e);
+				}
+				else{
+					return $(e).parents('td').last();
+				}
+			};
 
-		function showTblMenu(){
-			if(tblMenuOpen){
-				$('#tableCellMenu').css({
-					'top':mouseY - 55,
-        			'left':mouseX - 55
-				});
-				$('#tableCellMenu').show();
-				$('#tableCellMenu').animate({
-					height:"30px"
-				},100,function(){tblMenuOpen=false});
+			function showTblMenu(){
+				if(tblMenuOpen){
+					$('#tableCellMenu').css({
+						'top':mouseY - 55,
+	        			'left':mouseX - 55
+					});
+					$('#tableCellMenu').show();
+					$('#tableCellMenu').animate({
+						height:"30px"
+					},100,function(){tblMenuOpen=false});
+				}
+				else {
+					$('#tableCellMenu').animate({
+						height:0,
+					},100,function(){tblMenuOpen=true,$('#tableCellMenu').hide()});
+				}
 			}
-			else {
+
+			function hideTblMenu(){
 				$('#tableCellMenu').animate({
 					height:0,
 				},100,function(){tblMenuOpen=true,$('#tableCellMenu').hide()});
 			}
-		}
 
-		function hideTblMenu(){
-			$('#tableCellMenu').animate({
-				height:0,
-			},100,function(){tblMenuOpen=true,$('#tableCellMenu').hide()});
-		}
-
-		// button functions
-		$('#deleteTable').click(function(){
-			$(tblCell).parents('table').remove();
-			hideTblMenu(cellMenu);
-		});
-
-		$('#deleteRow').click(function(){
-			$(tblCell).parent('tr').remove();
-			hideTblMenu(cellMenu);
-		});
-
-		$('#addTopRow').click(function(){
-			let num_cells = $(tblCell).parent('tr').children('td').length;
-			let cells = "";
-			for(num_cells;num_cells > 0; num_cells--){
-				cells +='<td>New created cell</td>'; 
-			}
-			$(tblCell).parent('tr').before('<tr>'+cells+'</tr>');
-			hideTblMenu(cellMenu);
-		});
-		$('#addBottomRow').click(function(){
-			let num_cells = $(tblCell).parent('tr').children('td').length;
-			let cells = "";
-			for(num_cells;num_cells > 0; num_cells--){
-				cells +='<td>New created cell</td>'; 
-			}
-			$(tblCell).parent('tr').after('<tr>'+cells+'</tr>');
-			hideTblMenu(cellMenu);
-		});
-
-		$('#addColLeft').click(function(){
-			let ind = $(tblCell).index();
-			let table_rows = $(tblCell).parents('table').find('>tbody>tr');
-			table_rows.each(function(e, d) {
-				$(d).children('td').eq(ind).before('<td>New Created Cell</td>');
+			// button functions
+			$('#deleteTable').click(function(){
+				$(tblCell).parents('table').remove();
+				hideTblMenu(cellMenu);
 			});
-			hideTblMenu(cellMenu);
-		});
 
-		$('#addColRight').click(function(){
-			let ind = $(tblCell).index();
-			let table_rows = $(tblCell).parents('table').find('>tbody>tr');
-			table_rows.each(function(e, d) {
-				$(d).children('td').eq(ind).after('<td>New Created Cell</td>');
+			$('#deleteRow').click(function(){
+				$(tblCell).parent('tr').remove();
+				hideTblMenu(cellMenu);
 			});
-			hideTblMenu(cellMenu);
-		});
 
-		$('#deleteColumn').click(function(){
-			let ind = $(tblCell).index();
-			let table_rows = $(tblCell).parents('table').find('>tbody>tr');
-			table_rows.each(function(e, d) {
-				$(d).children('td').eq(ind).remove();
+			$('#addTopRow').click(function(){
+				let num_cells = $(tblCell).parent('tr').children('td').length;
+				let cells = "";
+				for(num_cells;num_cells > 0; num_cells--){
+					cells +='<td>New created cell</td>'; 
+				}
+				$(tblCell).parent('tr').before('<tr>'+cells+'</tr>');
+				hideTblMenu(cellMenu);
 			});
-			hideTblMenu(cellMenu);
-		});
-		$('#combainCells').click(function(){
-			let r = $(thisTable).find('tr[focused]');
-			let c = $(r[0]).find('td.selectedCell');
-			let cells = $(c[0]).siblings('td.selectedCell').andSelf().length;
-			let rows = $(thisTable).find('tr[focused]').length;
-			$(c[0]).removeClass('selectedCell');
-			$(thisTable).find('td.selectedCell').remove();
-			$(c[0]).attr({'colspan':cells,'rowspan':rows});
-			r.removeAttr('focused');
-			hideTblMenu(cellMenu);
-		});
-		$('#colorPicker').click(function(e){
-			$('#colPicker').css({
-				'top':e.pageY - 70,
-				'left':e.pageX - 70,
+			$('#addBottomRow').click(function(){
+				let num_cells = $(tblCell).parent('tr').children('td').length;
+				let cells = "";
+				for(num_cells;num_cells > 0; num_cells--){
+					cells +='<td>New created cell</td>'; 
+				}
+				$(tblCell).parent('tr').after('<tr>'+cells+'</tr>');
+				hideTblMenu(cellMenu);
 			});
-			$('#colPicker').farbtastic(function(e){
-				$(tblCell).css('background-color',e);
-			});
-			$('.farbtastic').show();
-			$('#colPicker').append(function(){
-				return $('<button id="closePicker">X</button>').click(function(){
-					$('.farbtastic').hide();
-					$(this).remove();
+
+			$('#addColLeft').click(function(){
+				let ind = $(tblCell).index();
+				let table_rows = $(tblCell).parents('table').find('>tbody>tr');
+				table_rows.each(function(e, d) {
+					$(d).children('td').eq(ind).before('<td>New Created Cell</td>');
 				});
+				hideTblMenu(cellMenu);
 			});
-			hideTblMenu(cellMenu);
-		});			
 
-		// cells selection
-		var isMouseDown = false,
-		allTableCells,
-		isCellSelected,
-		tableSelected;
-		var selectedIndexes = [];
-		editor.on('mousedown',function(e){
-			if($(e.target).parents('table.my-table').length == 1 && e.altKey){
-				isMouseDown = true;
-				let cell = checkCell(e.target);
-				tableSelected = $(cell).parents('table');
-				tableSelected.find('tr[focused]').removeAttr('focused');
-				tableSelected.find('td.selectedCell').removeClass('selectedCell');
-				$(cell).toggleClass('selectedCell');
-				$(cell).parents('tr').toggleClass('firstActiveTR');
-				$(cell).parents('tr').attr('focused', '1');
-				selectedIndexes.push($(cell).index());
-				isCellSelected = $(cell).hasClass('selectedCell');
-				allTableCells = $(cell).siblings().andSelf(); 
-				$(allTableCells).mouseover(function(){
-					if(isMouseDown){
-						selectedIndexes.push($(this).index());
-						$(this).toggleClass('selectedCell',isCellSelected);
-					}
+			$('#addColRight').click(function(){
+				let ind = $(tblCell).index();
+				let table_rows = $(tblCell).parents('table').find('>tbody>tr');
+				table_rows.each(function(e, d) {
+					$(d).children('td').eq(ind).after('<td>New Created Cell</td>');
 				});
-				$(tableSelected)
-					.children('tbody')
-					.children('tr')
-					.mouseover(function() {
-						for(var i = 0;i < selectedIndexes.length;i++){
-							$(this).children('td').eq(selectedIndexes[i]).addClass('selectedCell');
-							$(this).attr('focused','1');
+				hideTblMenu(cellMenu);
+			});
+
+			$('#deleteColumn').click(function(){
+				let ind = $(tblCell).index();
+				let table_rows = $(tblCell).parents('table').find('>tbody>tr');
+				table_rows.each(function(e, d) {
+					$(d).children('td').eq(ind).remove();
+				});
+				hideTblMenu(cellMenu);
+			});
+			$('#combainCells').click(function(){
+				let r = $(thisTable).find('tr[focused]');
+				let c = $(r[0]).find('td.selectedCell');
+				let cells = $(c[0]).siblings('td.selectedCell').andSelf().length;
+				let rows = $(thisTable).find('tr[focused]').length;
+				$(c[0]).removeClass('selectedCell');
+				$(thisTable).find('td.selectedCell').remove();
+				$(c[0]).attr({'colspan':cells,'rowspan':rows});
+				r.removeAttr('focused');
+				hideTblMenu(cellMenu);
+			});
+			$('#colorPicker').click(function(e){
+				$('#colPicker').css({
+					'top':e.pageY - 70,
+					'left':e.pageX - 70,
+				});
+				$('#colPicker').farbtastic(function(e){
+					$(tblCell).css('background-color',e);
+				});
+				$('.farbtastic').show();
+				$('#colPicker').append(function(){
+					return $('<button id="closePicker">X</button>').click(function(){
+						$('.farbtastic').hide();
+						$(this).remove();
+					});
+				});
+				hideTblMenu(cellMenu);
+			});			
+
+			// cells selection
+			var isMouseDown = false,
+			allTableCells,
+			isCellSelected,
+			tableSelected;
+			var selectedIndexes = [];
+			editor.on('mousedown',function(e){
+				if($(e.target).parents('table.'+createTbl.tableClass+'').length == 1 && e.altKey){
+					isMouseDown = true;
+					let cell = checkCell(e.target);
+					tableSelected = $(cell).parents('table');
+					tableSelected.find('tr[focused]').removeAttr('focused');
+					tableSelected.find('td.selectedCell').removeClass('selectedCell');
+					$(cell).toggleClass('selectedCell');
+					$(cell).parents('tr').toggleClass('firstActiveTR');
+					$(cell).parents('tr').attr('focused', '1');
+					selectedIndexes.push($(cell).index());
+					isCellSelected = $(cell).hasClass('selectedCell');
+					allTableCells = $(cell).siblings().andSelf(); 
+					$(allTableCells).mouseover(function(){
+						if(isMouseDown){
+							selectedIndexes.push($(this).index());
+							$(this).toggleClass('selectedCell',isCellSelected);
 						}
 					});
-				return false;
-			}
-		});
-		editor.on('mouseup',function(){
-			isMouseDown = false;
-			selectedIndexes = [];
-		});
-		editor.on('click',function(e){
-			if($(e.target).parents('table.my-table').length == 0){
-				$('.my-table').find('td.selectedCell').removeClass('selectedCell');
-			}
-		});
+					$(tableSelected)
+						.children('tbody')
+						.children('tr')
+						.mouseover(function() {
+							for(var i = 0;i < selectedIndexes.length;i++){
+								$(this).children('td').eq(selectedIndexes[i]).addClass('selectedCell');
+								$(this).attr('focused','1');
+							}
+						});
+					return false;
+				}
+			});
+			editor.on('mouseup',function(){
+				isMouseDown = false;
+				selectedIndexes = [];
+			});
+			editor.on('click',function(e){
+				if($(e.target).parents('table.'+createTbl.tableClass+'').length == 0){
+					$('.'+createTbl.tableClass+'').find('td.selectedCell').removeClass('selectedCell');
+				}
+			});
 
-		
+			
 
-		// -------------
-		// ----------------
+			// -------------
+			// ----------------
 
-		// bonus functions
-		$('#tblCell_left').click(function() {
-			$(tblCell).before('<td>New Cell</td>')
-			hideTblMenu(cellMenu)
-		});
-		$('#tblCell_right').click(function() {
-			$(tblCell).after('<td>New Cell</td>')
-			hideTblMenu(cellMenu)
-		});
-		$('#tblCell_left_del').click(function() {
-			if($(tblCell).prev().length){
-				$(tblCell).prev().remove();
+			// bonus functions
+			$('#tblCell_left').click(function() {
+				$(tblCell).before('<td>New Cell</td>')
+				hideTblMenu(cellMenu)
+			});
+			$('#tblCell_right').click(function() {
+				$(tblCell).after('<td>New Cell</td>')
+				hideTblMenu(cellMenu)
+			});
+			$('#tblCell_left_del').click(function() {
 				if($(tblCell).prev().length){
-					$(tblCell)
-					.siblings()
-					.first()
-					.attr("colspan","100%");
+					$(tblCell).prev().remove();
+					if($(tblCell).prev().length){
+						$(tblCell)
+						.siblings()
+						.first()
+						.attr("colspan","100%");
+					}
+					else{
+						$(tblCell).attr("colspan","100%");
+					}
+					hideTblMenu(cellMenu)
 				}
-				else{
-					$(tblCell).attr("colspan","100%");
-				}
-				hideTblMenu(cellMenu)
-			}
-		});
-		$('#tblCell_right_del').click(function() {
-			if($(tblCell).next().length){
-				$(tblCell).next().remove();
+			});
+			$('#tblCell_right_del').click(function() {
 				if($(tblCell).next().length){
-					$(tblCell)
-					.siblings()
-					.last()
-					.attr("colspan","100%");
+					$(tblCell).next().remove();
+					if($(tblCell).next().length){
+						$(tblCell)
+						.siblings()
+						.last()
+						.attr("colspan","100%");
+					}
+					else{
+						$(tblCell).attr('colspan', '100%');
+					}
+					hideTblMenu(cellMenu)
 				}
-				else{
-					$(tblCell).attr('colspan', '100%');
-				}
-				hideTblMenu(cellMenu)
-			}
-		});
-		// -----------
+			});
+			// -----------
 		}
 		else {
 			$('#toolbarTblBtn').hide();
 		};
-
-
 		
-
 		return this;
+	};
+
+	$.fn.wysiwyg.tableOptions = {
+		tableClass:'editorTable',
+		tableEnabled:true
 	};
 
 	$.fn.wysiwyg.defaults = {
